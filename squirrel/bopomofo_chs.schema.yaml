@@ -1,0 +1,135 @@
+# Rime schema
+# encoding: utf-8
+
+schema:
+  schema_id: bopomofo_chs
+  name: 簡體
+  version: "1.3"
+  author:
+    - 佛振 <chen.sst@gmail.com>
+    - turtleknight(修正臺灣使用者輸入習慣) <stk.chen@gmail.com>
+  description: |
+    修改自佛振製作的v1.3版，爲符合臺灣使用者輸入習慣，調整backspace爲刪除音節（Shift+Backspace）
+    調整選字選單符號爲12345678
+    簡繁轉換功能爲避免錯字，改用新建輸入法執行
+    刪除不常用的半形全形切換功能、中文英文切換功能（在osx內用CapsLocl執行）。
+    修改「、」的輸入方式，改爲直接commit，符合新酷音使用者習慣
+    僅於osx 10.8.2測試
+
+switches: #簡體模式
+  - name: zh
+    reset: 1 # 啓用opencc字形轉換
+simplifier:
+  opencc_config: zht2zhs.ini # opencc設定檔，位於/Library/Input Methods/Squirrel.app/Contents/SharedSupport/opencc
+  option_name: zh
+
+engine:
+  processors:
+    - ascii_composer      # 處理西文模式及中西文切換
+    - key_binder          # 在特定條件下將按鍵綁定到其他按鍵，如重定義逗號、句號爲候選翻頁鍵
+    - speller             # 拼寫處理器，接受字符按鍵，編輯輸入碼
+    - punctuator          # 句讀處理器，將單個字符按鍵直接映射爲文字符號
+    - selector            # 選字處理器，處理數字選字鍵、上、下候選定位、換頁鍵
+    - fluency_editor      # 句式編輯器，用於以空格斷詞、Enter上屏的注音輸入法
+  segmentors:
+    - ascii_segmentor     # 標識西文段落
+    - matcher             # 標識符合特定規則的段落，如網址、反查等
+    - abc_segmentor       # 標識常規的文字段落
+    - punct_segmentor     # 標識句讀段落
+    - fallback_segmentor  # 標識其他未標識段落
+  translators:
+    - punct_translator    # 轉換標點符號
+    - script_translator   # 腳本翻譯器，用於拼音等基於音節表的輸入方案
+  filters:
+    - simplifier
+    - uniquifier
+
+menu:
+  alternative_select_keys: "12345"
+
+speller:
+  alphabet: '1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347'
+  initials: '1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/-'
+  finals: " 6347"
+  delimiter: "'"
+  use_space: true
+  algebra:
+    - erase/^xx$/
+    - xform/^m(\d)$/mu$1/  # 呣
+    - xform/^r5$/er5/  # 〜兒
+    - xform/iu/iou/
+    - xform/ui/uei/
+    - xform/ong/ung/
+    - xform/^yi?/i/
+    - xform/^wu?/u/
+    - xform/iu/v/
+    - xform/^([jqx])u/$1v/
+    - xform/([iuv])n/$1en/
+    - xform/^zhi?/Z/
+    - xform/^chi?/C/
+    - xform/^shi?/S/
+    - xform/^([zcsr])i/$1/
+    - xform/ai/A/
+    - xform/ei/I/
+    - xform/ao/O/
+    - xform/ou/U/
+    - xform/ang/K/
+    - xform/eng/G/
+    - xform/an/M/
+    - xform/en/N/
+    - xform/er/R/
+    - xform/eh/E/
+    - xform/([iv])e/$1E/
+    - abbrev/^([bpmfdtnlgkhjqxZCSrzcs]).+$/$1/
+    - derive/^([A-Za-z]+)\d$/$1/
+    - abbrev/^([bpmfdtnlgkhjqxZCSrzcs]).+(\d)$/$1$2/
+    - 'xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR12345|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347|'
+
+translator:
+  dictionary: terra_pinyin
+  prism: bopomofo_chs
+  preedit_format:
+    - "xlit|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347'|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˉˊˇˋ˙ |"
+
+punctuator:
+  full_shape: #不使用全形模式故不做設定
+  half_shape:
+    import_preset: alternative
+    "!" : "！"
+    "@" : "＠"
+    "#" : [ "＃", 參 ]
+    "$" : [ "＄", "€", "￥", 肆 ]
+    "%" : [ "％", "%", 伍 ]
+    "<" : [ "，", "←" ]
+    ">" : [ "。", "→" ]
+    "?" : "？"
+    ":" : [ ：, ； ]
+    "'" : "、"
+    "\"" : { pair: [ "“", "”" ] }
+    "\\" : [ 、, "\\", ＼ ]
+    "|" : [ ・, "|", ｜, "§", "¦" ]
+    "`" : "`"
+    "~" : "～"
+    "&" : "&"
+    "*" : [ "*", ＊, ・, ×, ※, ❂, · ]
+    "(" : "（"
+    ")" : "）"
+    "_" : [ "─", "-" ]
+    "+" : [ "﹢", "+" ]
+    "=" : "＝"
+    "[" : [ 「, 【, 《, 〔, "［" ]
+    "]" : [ 」, 】, 》, 〕, "］" ]
+    "{" : [ 『, 〖, 〈, ｛ ]
+    "}" : [ 』, 〗, 〉, ｝ ]
+    "D" : ㄎ
+    "F" : ㄑ
+
+key_binder:
+  import_preset: default
+  bindings:
+    - { when: has_menu, accept: comma, send: comma }      # ㄝ
+    - { when: has_menu, accept: period, send: period }    # ㄡ
+    - { when: has_menu, accept: minus, send: minus }      # ㄦ
+    - { when: has_menu, accept: Left, send: Up }
+    - { when: has_menu, accept: Right, send: Down }
+    - { when: composing, accept: BackSpace, send: Shift+BackSpace }

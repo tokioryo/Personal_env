@@ -1,0 +1,28 @@
+patch:
+  us_keyboard_layout: true
+  style/horizontal: true            #使用橫向選單
+  style/font_face: "Heiti TC Light" #使用黑體爲預設字形
+  style/font_point: 20              #選單的字體大小
+  style/color_scheme: google        #選單主題，預設爲google style ^.<
+  app_options/com.alfredapp.Alfred:
+    ascii_mode: true
+  app_options/com.apple.dt.Xcode:
+    ascii_mode: true
+  app_options/com.apple.Xcode:
+    ascii_mode: true
+  app_options/com.sublimetext.2:
+    ascii_mode: true
+  app_options/com.apple.Terminal:
+    ascii_mode: true
+  app_options/com.panic.Coda2:
+    ascii_mode: true
+  app_options/com.apple.finder:
+    ascii_mode: true
+  app_options/com.blacktree.Quicksilver:
+    ascii_mode: true
+  app_options/com.googlecode.iterm2:
+    ascii_mode: true
+  app_options/org.vim.MacVim:
+    ascii_mode: true
+  app_options/com.apple.systemuiserver: #spotlight(頂部選單的appid)
+    ascii_mode: true
